@@ -1,0 +1,6 @@
+test
+runMain scalashop.VerticalBoxBlurRunner
+test
+runMain scalashop.HorizontalBoxBlurRunner
+runMain scalashop.ScalaShop
+submit kgnyszka@gmail.com wWWTYBvfRRue1py7

@@ -1,0 +1,16 @@
+test
+compile
+test
+runMain reductions.ParallelCountChangeRunner
+test
+runMain reductions.ParallelCountChangeRunner
+test
+submit kgnyszk@gmail.com GCgttODc8uvZ1DBU
+submit kgnyszka@gmail.com NGwBsVWrtyhynhuy
+test
+runMain reductions.LineOfSightRunner
+submit kgnyszka@gmail.com ZXnifAjEx9hyxNKb
+compile
+submit kgnyszka@gmail.com 6eqVA5khGtglyKZ3
+compile
+submit kgnyszka@gmail.com 6eqVA5khGtglyKZ3

@@ -1,0 +1,5 @@
+ runMain kmeans.KMeansRunner
+run-main kmeans.fun.ScalaShop
+compile
+run-main kmeans.fun.ScalaShop
+submit kgnyszka@gmail.com d293k8VDwQHgnrWZ
