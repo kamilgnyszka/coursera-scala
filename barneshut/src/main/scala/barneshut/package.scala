@@ -1,5 +1,6 @@
 import common._
 import barneshut.conctrees._
+import scala.math._
 
 package object barneshut {
 
@@ -58,8 +59,8 @@ package object barneshut {
     val centerY: Float = nw.centerY + (sw.centerY - nw.centerY)/2.0f
     val size: Float = nw.size * 2.0f
     val mass: Float = nw.mass + ne.mass + sw.mass + se.mass
-    val massX: Float = ((nw.massX * nw.mass) + (ne.massX * ne.mass) + (sw.massX * sw.mass) + (se.massX * se.mass))/mass
-    val massY: Float = ((nw.massY * nw.mass) + (ne.massY * ne.mass) + (sw.massY * sw.mass) + (se.massY * se.mass))/mass
+    val massX: Float = if(mass == 0.0f) centerX else ((nw.massX * nw.mass) + (ne.massX * ne.mass) + (sw.massX * sw.mass) + (se.massX * se.mass))/mass
+    val massY: Float = if(mass == 0.0f) centerY else  ((nw.massY * nw.mass) + (ne.massY * ne.mass) + (sw.massY * sw.mass) + (se.massY * se.mass))/mass
     val total: Int = nw.total + ne.total + sw.total + se.total
 
     def insert(b: Body): Fork = {
@@ -142,10 +143,15 @@ package object barneshut {
         case Empty(_, _, _) =>
           // no force
         case Leaf(_, _, _, bodies) =>
-          // add force contribution of each body by calling addForce
+          bodies.map(a => addForce(a.mass,a.x,a.y))
         case Fork(nw, ne, sw, se) =>
-          // see if node is far enough from the body,
-          // or recursion is needed
+          if ((quad.size)/(distance(quad.massX,x,quad.massY,y)) < theta) addForce(quad.mass,quad.massX,quad.massY)
+          else {
+            traverse(nw)
+            traverse(ne)
+            traverse(sw)
+            traverse(se)
+          }
       }
 
       traverse(quad)
@@ -168,14 +174,20 @@ package object barneshut {
     for (i <- 0 until matrix.length) matrix(i) = new ConcBuffer
 
     def +=(b: Body): SectorMatrix = {
-      ???
+      val secX = min(sectorPrecision-1,max(0,floor((b.x - boundaries.minX)/sectorSize))).toInt
+      val secY = min(sectorPrecision-1,max(0,floor((b.y - boundaries.minY)/sectorSize))).toInt
+      println(s"secX = $secX, secY = $secY, inserting into ${secX*secY}")
+      apply(secX,secY).+=(b)
       this
     }
 
     def apply(x: Int, y: Int) = matrix(y * sectorPrecision + x)
 
     def combine(that: SectorMatrix): SectorMatrix = {
-      ???
+      for(i <- 0 until matrix.size){
+        matrix(i) = matrix(i).combine(that.matrix(i))
+      }
+      this
     }
 
     def toQuad(parallelism: Int): Quad = {
